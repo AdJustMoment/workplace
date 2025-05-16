@@ -17,11 +17,30 @@ import {
 } from "@tanstack/react-table";
 
 import { useVideos } from "@/hooks/use.videos";
-import { Video } from "@/services/video.service";
+import { Video, validateVideos } from "@/services/video.service";
 
 const columnHelper = createColumnHelper<Video>();
 
 const columns = [
+  columnHelper.display({
+    id: "select",
+    header: ({ table }) => (
+      <input
+        type="checkbox"
+        checked={table.getIsAllRowsSelected()}
+        onChange={table.getToggleAllRowsSelectedHandler()}
+        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+      />
+    ),
+    cell: ({ row }) => (
+      <input
+        type="checkbox"
+        checked={row.getIsSelected()}
+        onChange={row.getToggleSelectedHandler()}
+        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+      />
+    ),
+  }),
   columnHelper.accessor("title", {
     header: "Title",
     cell: (info) => (
@@ -54,12 +73,10 @@ const columns = [
 
 export default function Videos() {
   const [pageIndex, setPageIndex] = useState(0);
-  const { data = { videos: [] } } = useVideos({
+  const { data = { videos: [] }, refetch } = useVideos({
     limit: 10,
     skip: pageIndex * 10,
   });
-
-  console.log("videos", data);
 
   const table = useReactTable({
     data: data.videos,
@@ -82,10 +99,43 @@ export default function Videos() {
     manualPagination: true,
   });
 
-  console.log(table.getRowModel().rows);
+  const handleValidate = async (valid: boolean) => {
+    const selectedRows = table.getSelectedRowModel().rows;
+    if (selectedRows.length === 0) return;
+
+    const ytIds = selectedRows.map((row) => row.original.ytId);
+    try {
+      await validateVideos(ytIds, valid);
+      table.resetRowSelection();
+      refetch();
+    } catch (error) {
+      console.error("Failed to validate videos:", error);
+      // You might want to add proper error handling here
+    }
+  };
 
   return (
     <div className="p-4">
+      <div className="mb-4 flex items-center gap-2">
+        <button
+          onClick={() => handleValidate(true)}
+          disabled={table.getSelectedRowModel().rows.length === 0}
+          className="rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 disabled:opacity-50"
+        >
+          Approve Selected
+        </button>
+        <button
+          onClick={() => handleValidate(false)}
+          disabled={table.getSelectedRowModel().rows.length === 0}
+          className="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 disabled:opacity-50"
+        >
+          Reject Selected
+        </button>
+        <span className="text-sm text-gray-500">
+          {table.getSelectedRowModel().rows.length} videos selected
+        </span>
+      </div>
+
       <div className="rounded-lg border border-gray-200 shadow-sm">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
