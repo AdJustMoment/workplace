@@ -24,7 +24,6 @@ export async function fetchVideos(params?: { limit?: number; skip?: number }) {
 }
 
 export async function validateVideos(yt_ids: string[], valid: boolean) {
-  console.log("validating", yt_ids, valid);
   const response = await apiClient.patch("/videos/validate", {
     yt_ids,
     valid,
