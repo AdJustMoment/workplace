@@ -29,7 +29,7 @@ const columns = [
         type="checkbox"
         checked={table.getIsAllRowsSelected()}
         onChange={table.getToggleAllRowsSelectedHandler()}
-        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+        className="checkbox checkbox-primary"
       />
     ),
     cell: ({ row }) => (
@@ -37,7 +37,7 @@ const columns = [
         type="checkbox"
         checked={row.getIsSelected()}
         onChange={row.getToggleSelectedHandler()}
-        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+        className="checkbox checkbox-primary"
       />
     ),
   }),
@@ -120,76 +120,79 @@ export default function Videos() {
         <button
           onClick={() => handleValidate(true)}
           disabled={table.getSelectedRowModel().rows.length === 0}
-          className="rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 disabled:opacity-50"
+          className="btn btn-success btn-sm"
         >
           Approve Selected
         </button>
         <button
           onClick={() => handleValidate(false)}
           disabled={table.getSelectedRowModel().rows.length === 0}
-          className="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 disabled:opacity-50"
+          className="btn btn-error btn-sm"
         >
           Reject Selected
         </button>
-        <span className="text-sm text-gray-500">
+        <span className="text-sm text-base-content/60">
           {table.getSelectedRowModel().rows.length} videos selected
         </span>
       </div>
 
-      <div className="rounded-lg border border-gray-200 shadow-sm">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            {table.getHeaderGroups().map((headerGroup: HeaderGroup<Video>) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header: Header<Video, unknown>) => (
-                  <th
-                    key={header.id}
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
+      <div className="card bg-base-100 shadow">
+        <div className="overflow-x-auto">
+          <table className="table table-zebra">
+            <thead>
+              {table
+                .getHeaderGroups()
+                .map((headerGroup: HeaderGroup<Video>) => (
+                  <tr key={headerGroup.id}>
+                    {headerGroup.headers.map(
+                      (header: Header<Video, unknown>) => (
+                        <th key={header.id}>
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                        </th>
+                      )
                     )}
-                  </th>
+                  </tr>
                 ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {table.getRowModel().rows.map((row: Row<Video>) => (
-              <tr key={row.id} className="hover:bg-gray-50">
-                {row.getVisibleCells().map((cell: Cell<Video, unknown>) => (
-                  <td
-                    key={cell.id}
-                    className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {table.getRowModel().rows.map((row: Row<Video>) => (
+                <tr key={row.id}>
+                  {row.getVisibleCells().map((cell: Cell<Video, unknown>) => (
+                    <td key={cell.id} className="max-w-[200px]">
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div className="flex items-center justify-between mt-4">
-        <div className="flex items-center gap-2">
+        <div className="join">
           <button
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className="px-3 py-1 text-sm border rounded-md disabled:opacity-50"
+            className="join-item btn btn-sm"
           >
             Previous
           </button>
           <button
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
-            className="px-3 py-1 text-sm border rounded-md disabled:opacity-50"
+            className="join-item btn btn-sm"
           >
             Next
           </button>
         </div>
-        <span className="text-sm text-gray-700">
+        <span className="text-sm text-base-content/80">
           Page {pageIndex + 1} of {table.getPageCount()}
         </span>
       </div>
