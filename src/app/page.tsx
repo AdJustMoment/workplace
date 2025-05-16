@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
@@ -7,11 +5,14 @@ export default function Home() {
         <div className="text-center space-y-8">
           <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white tracking-tight">
             AdJustMoment{" "}
-            <span className="text-blue-600 dark:text-blue-400">Research Tool</span>
+            <span className="text-blue-600 dark:text-blue-400">
+              Research Tool
+            </span>
           </h1>
-          
+
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Internal research platform for demo, testing, and data collection purposes.
+            Internal research platform for demo, testing, and data collection
+            purposes.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-16">
@@ -20,7 +21,9 @@ export default function Home() {
                 Purpose
               </h2>
               <p className="text-gray-600 dark:text-gray-300">
-                This tool supports our ongoing research efforts toward academic publication, focusing on adaptive interfaces and temporal interactions.
+                This tool supports our ongoing research efforts toward academic
+                publication, focusing on adaptive interfaces and temporal
+                interactions.
               </p>
             </div>
 
@@ -29,7 +32,8 @@ export default function Home() {
                 Status
               </h2>
               <p className="text-gray-600 dark:text-gray-300">
-                Currently under active development. This version is for internal use only and not intended for public release.
+                Currently under active development. This version is for internal
+                use only and not intended for public release.
               </p>
             </div>
           </div>
