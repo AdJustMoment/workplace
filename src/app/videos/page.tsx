@@ -76,6 +76,7 @@ export default function Videos() {
   const { data = { videos: [] }, refetch } = useVideos({
     limit: 10,
     skip: pageIndex * 10,
+    valid: null,
   });
 
   const table = useReactTable({

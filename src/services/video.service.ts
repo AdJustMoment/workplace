@@ -12,11 +12,16 @@ export type Video = {
   tagId: number;
 };
 
-export async function fetchVideos(params?: { limit?: number; skip?: number }) {
+export async function fetchVideos(params?: {
+  limit?: number;
+  skip?: number;
+  valid?: boolean | null;
+}) {
   const response = await apiClient.get<{ videos: Video[] }>("/videos", {
     params: {
       limit: params?.limit,
       skip: params?.skip,
+      valid: params?.valid === null ? "null" : params?.valid,
     },
   });
 
