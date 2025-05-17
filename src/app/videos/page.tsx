@@ -73,9 +73,10 @@ const columns = [
 
 export default function Videos() {
   const [pageIndex, setPageIndex] = useState(0);
-  const { data = { videos: [] }, refetch } = useVideos({
-    limit: 10,
-    skip: pageIndex * 10,
+  const pageSize = 10;
+  const { data = { videos: [], total: -1 }, refetch } = useVideos({
+    limit: pageSize,
+    skip: pageIndex * pageSize,
     valid: null,
   });
 
@@ -84,16 +85,16 @@ export default function Videos() {
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    pageCount: -1,
+    pageCount: Math.ceil(data.total / pageSize),
     state: {
       pagination: {
         pageIndex,
-        pageSize: 10,
+        pageSize,
       },
     },
     onPaginationChange: ((updater) => {
       if (typeof updater === "function") {
-        const newState = updater({ pageIndex, pageSize: 10 });
+        const newState = updater({ pageIndex, pageSize });
         setPageIndex(newState.pageIndex);
       }
     }) as OnChangeFn<PaginationState>,

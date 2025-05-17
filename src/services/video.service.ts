@@ -12,12 +12,17 @@ export type Video = {
   tagId: number;
 };
 
+export type VideoResponse = {
+  videos: Video[];
+  total: number;
+};
+
 export async function fetchVideos(params?: {
   limit?: number;
   skip?: number;
   valid?: boolean | null;
 }) {
-  const response = await apiClient.get<{ videos: Video[] }>("/videos", {
+  const response = await apiClient.get<VideoResponse>("/videos", {
     params: {
       limit: params?.limit,
       skip: params?.skip,
