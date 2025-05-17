@@ -11,3 +11,4 @@ This is an internal tool developed for the AdJustMoment research project. It is 
 # Guide
 
 - You can use an external UI library to implement if it's too complex, but you should check the `package.json` first and tell me what dependencies need to be installed.
+- We have installed DaisyUI library, try to utilize it to make the style consitent if possible.
