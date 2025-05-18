@@ -13,7 +13,7 @@ function objectSnakeToCamel<T>(obj: any): T {
       Object.entries(obj).map(([key, value]) => [
         snakeToCamel(key),
         objectSnakeToCamel<T>(value),
-      ]),
+      ])
     ) as T;
   }
   return obj;
@@ -21,6 +21,7 @@ function objectSnakeToCamel<T>(obj: any): T {
 
 export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
+  withCredentials: true,
 });
 
 apiClient.interceptors.response.use((response) => {
