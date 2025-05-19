@@ -3,12 +3,17 @@ description:
 globs: 
 alwaysApply: true
 ---
-# Purpose
+## Purpose
 
 This is an internal tool developed for the AdJustMoment research project. It is intended for demo, testing, and data collection purposes only. The system is still under active development and will support our ongoing efforts toward a full academic publication.
 
 
-# Guide
+## Guide
 
 - You can use an external UI library to implement if it's too complex, but you should check the `package.json` first and tell me what dependencies need to be installed.
 - We have installed DaisyUI library, try to utilize it to make the style consitent if possible.
+
+
+## Conventions
+
+- Tries to split bigger components into smaller ones. For example, if you have a table component that contains a menu inside, you could extract the menu component.
