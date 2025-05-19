@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "@/contexts/auth.context";
+import { House, Stamp } from "lucide-react";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -11,8 +12,8 @@ export default function Sidebar() {
   const { logout } = useAuth();
 
   const navItems = [
-    { href: "/", label: "Home", icon: "🏠" },
-    { href: "/videos", label: "Videos", icon: "🎥" },
+    { href: "/", label: "Home", icon: <House /> },
+    { href: "/validate-videos", label: "Validate Videos", icon: <Stamp /> },
   ];
 
   return (
