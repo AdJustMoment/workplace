@@ -4,12 +4,14 @@ export default function Home() {
       <main className="max-w-4xl mx-auto px-6 py-16 sm:py-24">
         <div className="text-center space-y-8">
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">
-            AdJustMoment <span className="text-primary">Research Tool</span>
+            <span className="text-orange-primary">AdJustMoment</span>{" "}
+            <span className="text-brown-primary">Research Tool</span>
           </h1>
 
           <p className="text-xl text-base-content/80 max-w-2xl mx-auto">
-            Internal research platform for demo, testing, and data collection
-            purposes.
+            A cutting-edge research platform designed for exploring adaptive
+            interfaces and temporal interactions. Join us in shaping the future
+            of human-computer interaction.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-16">
@@ -32,18 +34,6 @@ export default function Home() {
                   internal use only and not intended for public release.
                 </p>
               </div>
-            </div>
-          </div>
-
-          <div className="mt-16">
-            <h2 className="text-2xl font-semibold mb-6">Quick Access</h2>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="/experiments" className="btn btn-primary">
-                Run Experiments
-              </a>
-              <a href="/data" className="btn btn-outline">
-                View Data
-              </a>
             </div>
           </div>
 
