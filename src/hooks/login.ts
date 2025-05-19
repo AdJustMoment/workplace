@@ -10,8 +10,5 @@ export function useLogin() {
       username: string;
       password: string;
     }) => login(username, password),
-    onSuccess: (data) => {
-      localStorage.setItem("auth_token", data.accessToken);
-    },
   });
 }

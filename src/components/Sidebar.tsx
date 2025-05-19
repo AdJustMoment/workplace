@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { useAuth } from "@/contexts/auth.context";
 
 export default function Sidebar() {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const { logout } = useAuth();
 
   const navItems = [
     { href: "/", label: "Home", icon: "🏠" },
@@ -17,11 +19,11 @@ export default function Sidebar() {
     <div className="drawer-side">
       <label htmlFor="drawer" className="drawer-overlay"></label>
       <aside
-        className={`bg-base-200/95 backdrop-blur-sm border-r border-base-300 min-h-screen transition-all duration-300 ${
+        className={`bg-base-200/95 backdrop-blur-sm border-r border-base-300 min-h-screen transition-all duration-300 flex flex-col ${
           isCollapsed ? "w-16" : "w-64"
         }`}
       >
-        <div className="p-4">
+        <div className="p-4 flex-1">
           <div className="flex items-center justify-between mb-4">
             {!isCollapsed && (
               <h2 className="text-xl font-bold text-base-content">
@@ -52,6 +54,15 @@ export default function Sidebar() {
               </li>
             ))}
           </ul>
+        </div>
+        <div className="p-4 border-t border-base-300">
+          <button
+            onClick={logout}
+            className="btn btn-ghost w-full justify-start hover:bg-base-300/50"
+          >
+            <span className="text-xl">🚪</span>
+            {!isCollapsed && "Logout"}
+          </button>
         </div>
       </aside>
     </div>

@@ -24,3 +24,17 @@ export async function login(username: string, password: string) {
     throw new Error("Unknown error");
   }
 }
+
+export async function logout() {
+  try {
+    const response = await apiClient.post("/auth/logout", {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data.detail);
+    }
+    throw new Error("Unknown error");
+  }
+}

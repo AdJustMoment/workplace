@@ -1,7 +1,6 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth.context";
 
 interface LoginFormData {
@@ -15,16 +14,10 @@ export default function LoginPage() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>();
-  const router = useRouter();
   const { login } = useAuth();
 
-  const onSubmit = async (data: LoginFormData) => {
-    try {
-      await login(data.username, data.password);
-      router.push("/videos");
-    } catch (error) {
-      // Error is handled by the auth context
-    }
+  const onSubmit = (data: LoginFormData) => {
+    login(data.username, data.password);
   };
 
   return (

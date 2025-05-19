@@ -3,13 +3,13 @@ import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("access_token");
-  const isAuthPage = request.nextUrl.pathname === "/login";
+  const isLoginPage = request.nextUrl.pathname === "/login";
 
-  if (!token && !isAuthPage) {
+  if (!token && !isLoginPage) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (token && isAuthPage) {
+  if (token && isLoginPage) {
     return NextResponse.redirect(new URL("/videos", request.url));
   }
 
@@ -17,5 +17,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/videos/:path*", "/login"],
+  matcher: ["/"],
 };

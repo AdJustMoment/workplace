@@ -1,17 +1,11 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
+import { createContext, useContext, ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useLogin } from "@/hooks/login";
-
+import { toast } from "react-hot-toast";
+import { useLogout } from "@/hooks/logout";
 interface AuthContextType {
-  isAuthenticated: boolean;
   login: (username: string, password: string) => void;
   logout: () => void;
 }
@@ -19,40 +13,40 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
 
   const { mutate: loginMutation } = useLogin();
-
-  useEffect(() => {
-    // Check if user is already logged in (e.g., check localStorage or session)
-    const token = localStorage.getItem("auth_token");
-    setIsAuthenticated(!!token);
-  }, []);
+  const { mutate: logoutMutation } = useLogout();
 
   const login = (username: string, password: string) => {
     loginMutation(
       { username, password },
       {
         onSuccess: () => {
-          setIsAuthenticated(true);
-          router.push("/videos");
+          router.push("/");
+          toast.success("Login successful");
         },
         onError: (error) => {
-          console.error(error);
+          toast.error(error.message);
         },
       }
     );
   };
 
   const logout = () => {
-    localStorage.removeItem("auth_token");
-    setIsAuthenticated(false);
-    router.push("/login");
+    logoutMutation(undefined, {
+      onSuccess: () => {
+        router.push("/login");
+        toast.success("Logout successful");
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    });
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ login, logout }}>
       {children}
     </AuthContext.Provider>
   );
