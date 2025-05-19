@@ -5,6 +5,7 @@ export function useVideos(params?: {
   limit?: number;
   skip?: number;
   valid?: boolean | null;
+  tagId?: number | null;
 }) {
   return useQuery({
     queryKey: ["videos", params],

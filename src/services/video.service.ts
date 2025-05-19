@@ -21,12 +21,14 @@ export async function fetchVideos(params?: {
   limit?: number;
   skip?: number;
   valid?: boolean | null;
+  tagId?: number | null;
 }) {
   const response = await apiClient.get<VideoResponse>("/videos", {
     params: {
       limit: params?.limit,
       skip: params?.skip,
       valid: params?.valid === null ? "null" : params?.valid,
+      tag_id: params?.tagId,
     },
   });
 
@@ -38,5 +40,19 @@ export async function validateVideos(yt_ids: string[], valid: boolean) {
     yt_ids,
     valid,
   });
+  return response.data;
+}
+
+export type Tag = {
+  id: number;
+  name: string;
+};
+
+export type TagResponse = {
+  tags: Tag[];
+};
+
+export async function fetchVideoTags() {
+  const response = await apiClient.get<TagResponse>("/videos/tags");
   return response.data;
 }

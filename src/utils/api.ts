@@ -24,10 +24,22 @@ export const apiClient = axios.create({
   withCredentials: true,
 });
 
-apiClient.interceptors.response.use((response) => {
-  if (response.data) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    response.data = objectSnakeToCamel<any>(response.data);
+apiClient.interceptors.response.use(
+  (response) => {
+    if (response.data) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      response.data = objectSnakeToCamel<any>(response.data);
+    }
+    return response;
+  },
+  (error) => {
+    if (error.response.status === 401) {
+      import("react-hot-toast").then(({ toast }) => {
+        toast.error(
+          "Your session has expired. Please refresh the page to continue."
+        );
+      });
+    }
+    return Promise.reject(error);
   }
-  return response;
-});
+);
