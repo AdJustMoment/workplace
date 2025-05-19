@@ -18,6 +18,8 @@ import {
 
 import { useVideos } from "@/hooks/use.videos";
 import { Video, validateVideos } from "@/services/video.service";
+import { useTags } from "@/hooks/use.tags";
+import { Tag } from "@/services/video.service";
 
 const columnHelper = createColumnHelper<Video>();
 
@@ -73,12 +75,15 @@ const columns = [
 
 export default function Videos() {
   const [pageIndex, setPageIndex] = useState(0);
+  const [selectedTagId, setSelectedTagId] = useState<number | null>(null);
   const pageSize = 10;
   const { data = { videos: [], total: -1 }, refetch } = useVideos({
     limit: pageSize,
     skip: pageIndex * pageSize,
     valid: null,
+    tagId: selectedTagId,
   });
+  const { data: tagsData } = useTags();
 
   const table = useReactTable({
     data: data.videos,
@@ -119,6 +124,20 @@ export default function Videos() {
   return (
     <div className="p-4">
       <div className="mb-4 flex items-center gap-2">
+        <select
+          className="select select-bordered select-sm w-48"
+          value={selectedTagId ?? ""}
+          onChange={(e) =>
+            setSelectedTagId(e.target.value ? Number(e.target.value) : null)
+          }
+        >
+          <option value="">All Tags</option>
+          {tagsData?.tags.map((tag: Tag) => (
+            <option key={tag.id} value={tag.id}>
+              {tag.name}
+            </option>
+          ))}
+        </select>
         <button
           onClick={() => handleValidate(true)}
           disabled={table.getSelectedRowModel().rows.length === 0}
