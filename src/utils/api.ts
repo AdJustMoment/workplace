@@ -35,9 +35,7 @@ apiClient.interceptors.response.use(
   (error) => {
     if (error.response.status === 401) {
       import("react-hot-toast").then(({ toast }) => {
-        toast.error(
-          "Your session has expired. Please refresh the page to continue."
-        );
+        toast.error("Your session has expired. Please login again.");
       });
     }
     return Promise.reject(error);
