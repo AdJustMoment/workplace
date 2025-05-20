@@ -38,3 +38,15 @@ export async function logout() {
     throw new Error("Unknown error");
   }
 }
+
+export type User = {
+  id: string;
+  username: string;
+};
+
+export async function getCurrentUser() {
+  const response = await apiClient.get<User>("/user/me", {
+    withCredentials: true,
+  });
+  return response.data;
+}
