@@ -16,9 +16,9 @@ import {
   Row,
 } from "@tanstack/react-table";
 
-import { useVideos } from "@/hooks/use.videos";
+import { useVideos } from "@/hooks/apis/use.videos";
 import { Video, validateVideos } from "@/services/video.service";
-import { useTags } from "@/hooks/use.tags";
+import { useTags } from "@/hooks/apis/use.tags";
 import { Tag } from "@/services/video.service";
 
 const columnHelper = createColumnHelper<Video>();

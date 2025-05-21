@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchVideos } from "../services/video.service";
+import { fetchVideos } from "../../services/video.service";
 
 export function useVideos(params?: {
   limit?: number;

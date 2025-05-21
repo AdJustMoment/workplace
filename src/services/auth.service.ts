@@ -1,4 +1,4 @@
-import { apiClient } from "@/utils/api";
+import { apiClient, apiClientWithAuth } from "@/utils/api";
 import { AxiosError } from "axios";
 
 export type LoginResponse = {
@@ -27,7 +27,7 @@ export async function login(username: string, password: string) {
 
 export async function logout() {
   try {
-    const response = await apiClient.post("/auth/logout", {
+    const response = await apiClientWithAuth.post("/auth/logout", {
       withCredentials: true,
     });
     return response.data;
@@ -45,8 +45,6 @@ export type User = {
 };
 
 export async function getCurrentUser() {
-  const response = await apiClient.get<User>("/user/me", {
-    withCredentials: true,
-  });
+  const response = await apiClientWithAuth.get<User>("/user/me");
   return response.data;
 }
