@@ -1,4 +1,4 @@
-import { apiClient } from "../utils/api";
+import { apiClientWithAuth } from "../utils/api";
 
 export type Video = {
   ytId: string;
@@ -23,7 +23,7 @@ export async function fetchVideos(params?: {
   valid?: boolean | null;
   tagId?: number | null;
 }) {
-  const response = await apiClient.get<VideoResponse>("/videos", {
+  const response = await apiClientWithAuth.get<VideoResponse>("/videos", {
     params: {
       limit: params?.limit,
       skip: params?.skip,
@@ -36,7 +36,7 @@ export async function fetchVideos(params?: {
 }
 
 export async function validateVideos(yt_ids: string[], valid: boolean) {
-  const response = await apiClient.patch("/videos/validate", {
+  const response = await apiClientWithAuth.patch("/videos/validate", {
     yt_ids,
     valid,
   });
@@ -53,6 +53,6 @@ export type TagResponse = {
 };
 
 export async function fetchVideoTags() {
-  const response = await apiClient.get<TagResponse>("/videos/tags");
+  const response = await apiClientWithAuth.get<TagResponse>("/videos/tags");
   return response.data;
 }
