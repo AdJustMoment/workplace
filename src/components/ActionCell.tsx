@@ -20,7 +20,7 @@ export function ActionsCell({ row }: { row: Row<Video> }) {
     updateVideosStatus(
       {
         videos: [row.original],
-        valid: false,
+        valid: "null",
       },
       {
         onSuccess: () => {

@@ -22,6 +22,7 @@ import { useTags } from "@/hooks/apis/use.tags";
 import { Tag } from "@/services/video.service";
 import { useUpdateVideosStatus } from "@/hooks/apis/use.validate.videos";
 import { toast } from "react-hot-toast";
+import { formatTime } from "@/utils/time";
 
 const columnHelper = createColumnHelper<Video>();
 
@@ -67,11 +68,7 @@ const columns = [
   }),
   columnHelper.accessor("lengthSec", {
     header: "Duration",
-    cell: (info) => {
-      const minutes = Math.floor(info.getValue() / 60);
-      const seconds = info.getValue() % 60;
-      return `${minutes}:${seconds.toString().padStart(2, "0")}`;
-    },
+    cell: (info) => formatTime(info.getValue()),
   }),
 ];
 
@@ -123,10 +120,18 @@ export default function Videos() {
         {
           onSuccess: () => {
             table.resetRowSelection();
-            toast.success("Videos approved successfully");
+            if (valid) {
+              toast.success("Videos approved successfully");
+            } else {
+              toast.success("Videos rejected successfully");
+            }
           },
           onError: () => {
-            toast.error("Failed to approve videos");
+            if (valid) {
+              toast.error("Failed to approve videos");
+            } else {
+              toast.error("Failed to reject videos");
+            }
           },
         }
       );

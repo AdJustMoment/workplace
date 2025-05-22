@@ -20,8 +20,9 @@ import { useVideos } from "@/hooks/apis/use.videos";
 import { Video } from "@/services/video.service";
 import { useTags } from "@/hooks/apis/use.tags";
 import { Tag } from "@/services/video.service";
-import { ActionsCell } from "@/components/ActionCell";
+
 import { formatTime } from "@/utils/time";
+import { ActionsCell } from "@/components/ActionCell";
 
 const columnHelper = createColumnHelper<Video>();
 
@@ -61,14 +62,14 @@ const columns = [
   }),
 ];
 
-export default function ExperimentVideos() {
+export default function RejectedVideos() {
   const [pageIndex, setPageIndex] = useState(0);
   const [selectedTagId, setSelectedTagId] = useState<number | null>(null);
   const pageSize = 10;
   const { data = { videos: [], total: -1 } } = useVideos({
     limit: pageSize,
     skip: pageIndex * pageSize,
-    valid: true,
+    valid: false,
     tagId: selectedTagId,
   });
   const { data: tagsData } = useTags();
