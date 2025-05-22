@@ -20,32 +20,12 @@ import { useVideos } from "@/hooks/apis/use.videos";
 import { Video } from "@/services/video.service";
 import { useTags } from "@/hooks/apis/use.tags";
 import { Tag } from "@/services/video.service";
-import { useUpdateVideosStatus } from "@/hooks/apis/use.validate.videos";
-import { toast } from "react-hot-toast";
+import { ActionsCell } from "@/components/ActionCell";
 import { formatTime } from "@/utils/time";
 
 const columnHelper = createColumnHelper<Video>();
 
 const columns = [
-  columnHelper.display({
-    id: "select",
-    header: ({ table }) => (
-      <input
-        type="checkbox"
-        checked={table.getIsAllRowsSelected()}
-        onChange={table.getToggleAllRowsSelectedHandler()}
-        className="checkbox checkbox-primary"
-      />
-    ),
-    cell: ({ row }) => (
-      <input
-        type="checkbox"
-        checked={row.getIsSelected()}
-        onChange={row.getToggleSelectedHandler()}
-        className="checkbox checkbox-primary"
-      />
-    ),
-  }),
   columnHelper.accessor("title", {
     header: "Title",
     cell: (info) => (
@@ -70,20 +50,27 @@ const columns = [
     header: "Duration",
     cell: (info) => formatTime(info.getValue()),
   }),
+  columnHelper.display({
+    id: "actions",
+    header: "",
+    cell: ({ row }) => (
+      <div className="w-24">
+        <ActionsCell row={row} />
+      </div>
+    ),
+  }),
 ];
 
-export default function Videos() {
+export default function ExperimentVideos() {
   const [pageIndex, setPageIndex] = useState(0);
   const [selectedTagId, setSelectedTagId] = useState<number | null>(null);
   const pageSize = 10;
-
   const { data = { videos: [], total: -1 } } = useVideos({
     limit: pageSize,
     skip: pageIndex * pageSize,
-    valid: null,
+    valid: true,
     tagId: selectedTagId,
   });
-  const { mutate: updateVideosStatus } = useUpdateVideosStatus();
   const { data: tagsData } = useTags();
 
   const table = useReactTable({
@@ -107,40 +94,6 @@ export default function Videos() {
     manualPagination: true,
   });
 
-  const handleValidate = async (valid: boolean) => {
-    const selectedRows = table.getSelectedRowModel().rows;
-    if (selectedRows.length === 0) return;
-
-    try {
-      updateVideosStatus(
-        {
-          videos: selectedRows.map((row) => row.original),
-          valid,
-        },
-        {
-          onSuccess: () => {
-            table.resetRowSelection();
-            if (valid) {
-              toast.success("Videos approved successfully");
-            } else {
-              toast.success("Videos rejected successfully");
-            }
-          },
-          onError: () => {
-            if (valid) {
-              toast.error("Failed to approve videos");
-            } else {
-              toast.error("Failed to reject videos");
-            }
-          },
-        }
-      );
-    } catch (error) {
-      console.error("Failed to validate videos:", error);
-      // You might want to add proper error handling here
-    }
-  };
-
   return (
     <div className="p-4">
       <div className="mb-4 flex items-center gap-2">
@@ -158,27 +111,10 @@ export default function Videos() {
             </option>
           ))}
         </select>
-        <button
-          onClick={() => handleValidate(true)}
-          disabled={table.getSelectedRowModel().rows.length === 0}
-          className="btn btn-success btn-sm"
-        >
-          Approve Selected
-        </button>
-        <button
-          onClick={() => handleValidate(false)}
-          disabled={table.getSelectedRowModel().rows.length === 0}
-          className="btn btn-error btn-sm"
-        >
-          Reject Selected
-        </button>
-        <span className="text-sm text-base-content/60">
-          {table.getSelectedRowModel().rows.length} videos selected
-        </span>
       </div>
 
       <div className="card bg-base-100 shadow">
-        <div className="overflow-x-auto">
+        <div className="">
           <table className="table table-zebra">
             <thead>
               {table
@@ -202,7 +138,7 @@ export default function Videos() {
               {table.getRowModel().rows.map((row: Row<Video>) => (
                 <tr key={row.id}>
                   {row.getVisibleCells().map((cell: Cell<Video, unknown>) => (
-                    <td key={cell.id} className="max-w-[200px]">
+                    <td key={cell.id} className="">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

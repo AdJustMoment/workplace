@@ -6,6 +6,7 @@ import { AuthProvider } from "@/contexts/auth.context";
 import { Toaster } from "react-hot-toast";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export default function Providers({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -33,6 +34,7 @@ export default function Providers({ children }: { children: ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools initialIsOpen={false} />
       <Toaster />
       <AuthProvider>{children}</AuthProvider>
     </QueryClientProvider>

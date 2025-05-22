@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "@/contexts/auth.context";
-import { House, Stamp } from "lucide-react";
+import { House, Stamp, TestTube, Trash2 } from "lucide-react";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -14,6 +14,16 @@ export default function Sidebar() {
   const navItems = [
     { href: "/", label: "Home", icon: <House /> },
     { href: "/validate-videos", label: "Validate Videos", icon: <Stamp /> },
+    {
+      href: "/experiment-videos",
+      label: "Experiment Videos",
+      icon: <TestTube />,
+    },
+    {
+      href: "/rejected-videos",
+      label: "Rejected Videos",
+      icon: <Trash2 />,
+    },
   ];
 
   return (
