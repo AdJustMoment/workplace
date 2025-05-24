@@ -22,6 +22,7 @@ import { useTags } from "@/hooks/apis/use.tags";
 import { Tag } from "@/services/video.service";
 import { ActionsCell } from "@/components/ActionCell";
 import { formatTime } from "@/utils/time";
+import { getYoutubeVideoUrl } from "@/utils/youtube";
 
 const columnHelper = createColumnHelper<Video>();
 
@@ -30,7 +31,15 @@ const columns = [
     header: "Title",
     cell: (info) => (
       <div className="max-w-md truncate" title={info.getValue()}>
-        {info.getValue()}
+        <a
+          href={getYoutubeVideoUrl(info.row.original.ytId)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="link link-hover"
+          title={info.getValue()}
+        >
+          {info.getValue()}
+        </a>
       </div>
     ),
   }),
