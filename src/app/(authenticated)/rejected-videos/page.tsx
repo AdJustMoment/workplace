@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   useReactTable,
@@ -110,6 +110,11 @@ export default function RejectedVideos() {
     }) as OnChangeFn<PaginationState>,
     manualPagination: true,
   });
+
+  useEffect(() => {
+    table.resetRowSelection();
+    setPageIndex(0);
+  }, [selectedTagId, selectedLengthFilter, table]);
 
   return (
     <div className="p-4">
