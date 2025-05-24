@@ -36,25 +36,25 @@ export default function PendingStats({ tagId }: PendingStatsProps) {
       <div className="stat">
         <div className="stat-title">Pending Videos</div>
         <div className="stat-value">{allVideos.total}</div>
-        <div className="stat-desc">Videos pending review</div>
+        <div className="stat-desc">All durations</div>
       </div>
 
       <div className="stat">
-        <div className="stat-title">10 Minutes Videos</div>
+        <div className="stat-title">Pending Videos</div>
         <div className="stat-value">{tenMinutesVideos.total}</div>
-        <div className="stat-desc">From 0 to 10 minutes</div>
+        <div className="stat-desc">0-10 minutes</div>
       </div>
 
       <div className="stat">
-        <div className="stat-title">20 Minutes Videos</div>
+        <div className="stat-title">Pending Videos</div>
         <div className="stat-value">{twentyMinutesVideos.total}</div>
-        <div className="stat-desc">From 10 to 20 minutes</div>
+        <div className="stat-desc">10-20 minutes</div>
       </div>
 
       <div className="stat">
-        <div className="stat-title">30 Minutes Videos</div>
+        <div className="stat-title">Pending Videos</div>
         <div className="stat-value">{thirtyMinutesVideos.total}</div>
-        <div className="stat-desc">From 20 to 30 minutes</div>
+        <div className="stat-desc">20+ minutes</div>
       </div>
     </div>
   );
