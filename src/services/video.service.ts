@@ -22,6 +22,8 @@ export async function fetchVideos(params?: {
   skip?: number;
   valid?: boolean | null;
   tagId?: number | null;
+  lengthSecFrom?: number | null;
+  lengthSecTo?: number | null;
 }) {
   const response = await apiClientWithAuth.get<VideoResponse>("/videos", {
     params: {
@@ -29,6 +31,8 @@ export async function fetchVideos(params?: {
       skip: params?.skip,
       valid: params?.valid === null ? "null" : params?.valid,
       tag_id: params?.tagId,
+      length_sec_from: params?.lengthSecFrom,
+      length_sec_to: params?.lengthSecTo,
     },
   });
 
