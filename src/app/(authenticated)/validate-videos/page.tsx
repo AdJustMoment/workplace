@@ -72,9 +72,23 @@ const columns = [
   }),
 ];
 
+type LengthFilter = {
+  from: number | null;
+  to: number | null;
+};
+
+const LENGTH_FILTERS: { label: string; value: LengthFilter }[] = [
+  { label: "All Durations", value: { from: null, to: null } },
+  { label: "0-10 minutes", value: { from: 0, to: 600 } },
+  { label: "10-20 minutes", value: { from: 601, to: 1200 } },
+  { label: "20+ minutes", value: { from: 1201, to: null } },
+];
+
 export default function Videos() {
   const [pageIndex, setPageIndex] = useState(0);
   const [selectedTagId, setSelectedTagId] = useState<number | null>(null);
+  const [selectedLengthFilter, setSelectedLengthFilter] =
+    useState<LengthFilter>({ from: null, to: null });
   const pageSize = 10;
 
   const { data = { videos: [], total: -1 } } = useVideos({
@@ -82,6 +96,8 @@ export default function Videos() {
     skip: pageIndex * pageSize,
     valid: null,
     tagId: selectedTagId,
+    lengthSecFrom: selectedLengthFilter.from,
+    lengthSecTo: selectedLengthFilter.to,
   });
   const { mutate: updateVideosStatus } = useUpdateVideosStatus();
   const { data: tagsData } = useTags();
@@ -155,6 +171,17 @@ export default function Videos() {
           {tagsData?.tags.map((tag: Tag) => (
             <option key={tag.id} value={tag.id}>
               {tag.name}
+            </option>
+          ))}
+        </select>
+        <select
+          className="select select-bordered select-sm w-48"
+          value={JSON.stringify(selectedLengthFilter)}
+          onChange={(e) => setSelectedLengthFilter(JSON.parse(e.target.value))}
+        >
+          {LENGTH_FILTERS.map((filter) => (
+            <option key={filter.label} value={JSON.stringify(filter.value)}>
+              {filter.label}
             </option>
           ))}
         </select>
