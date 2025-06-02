@@ -8,11 +8,12 @@ import {
 import { TaskStatus } from "@/services/task.service";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { RefreshCw } from "lucide-react";
+import { ChevronDown, RefreshCw } from "lucide-react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
 import { useTags } from "@/hooks/apis/use.tags";
+import { useState } from "react";
 
 const queryVideoSchema = z.object({
   tagId: z.coerce.number().min(1, "Tag ID is required"),
@@ -30,6 +31,8 @@ const statusColors = {
 export default function TasksPage() {
   const { data: tasksData, refetch } = useTasks();
   const { data: tagsData } = useTags();
+  const [expandedTaskId, setExpandedTaskId] = useState<number | null>(null);
+
   const form = useForm<QueryVideoForm>({
     resolver: zodResolver(queryVideoSchema),
     defaultValues: {
@@ -70,6 +73,10 @@ export default function TasksPage() {
     toast.success("Tasks refreshed");
   };
 
+  const toggleTask = (taskId: number) => {
+    setExpandedTaskId(expandedTaskId === taskId ? null : taskId);
+  };
+
   return (
     <div className="container mx-auto py-10">
       <div className="flex justify-between items-center mb-6">
@@ -102,24 +109,49 @@ export default function TasksPage() {
               <th>Task Tag</th>
               <th>Created At</th>
               <th>Updated At</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
             {tasksData?.tasks.map((task) => (
-              <tr key={task.id}>
-                <td>{task.id}</td>
-                <td>
-                  <div className="flex items-center gap-2">
-                    <div
-                      className={`w-2 h-2 rounded-full ${statusColors[task.status]}`}
+              <>
+                <tr
+                  key={task.id}
+                  className="cursor-pointer hover:bg-base-200"
+                  onClick={() => toggleTask(task.id)}
+                >
+                  <td>{task.id}</td>
+                  <td>
+                    <div className="flex items-center gap-2">
+                      <div
+                        className={`w-2 h-2 rounded-full ${statusColors[task.status]}`}
+                      />
+                      {task.status}
+                    </div>
+                  </td>
+                  <td>{task.taskTag}</td>
+                  <td>{format(new Date(task.createdAt), "PPpp")}</td>
+                  <td>{format(new Date(task.updatedAt), "PPpp")}</td>
+                  <td>
+                    <ChevronDown
+                      className={`h-4 w-4 transition-transform ${
+                        expandedTaskId === task.id ? "rotate-180" : ""
+                      }`}
                     />
-                    {task.status}
-                  </div>
-                </td>
-                <td>{task.taskTag}</td>
-                <td>{format(new Date(task.createdAt), "PPpp")}</td>
-                <td>{format(new Date(task.updatedAt), "PPpp")}</td>
-              </tr>
+                  </td>
+                </tr>
+                {expandedTaskId === task.id && (
+                  <tr>
+                    <td colSpan={6} className="bg-base-200">
+                      <div className="p-4">
+                        <p className="text-base-content/80">
+                          {task.description || "No description provided."}
+                        </p>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </>
             ))}
           </tbody>
         </table>

@@ -10,6 +10,7 @@ export type Task = {
   id: number;
   taskTag: string;
   status: TaskStatus;
+  description: string | null;
   createdAt: string;
   updatedAt: string;
 };
