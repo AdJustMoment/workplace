@@ -5,7 +5,7 @@ import {
   useTasks,
   useQueryKeywords,
 } from "@/hooks/apis/use.tasks";
-import { TaskStatus } from "@/services/task.service";
+import { TaskStatus, Task } from "@/services/task.service";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { ChevronDown, RefreshCw } from "lucide-react";
@@ -14,6 +14,15 @@ import toast from "react-hot-toast";
 import { z } from "zod";
 import { useTags } from "@/hooks/apis/use.tags";
 import { useState } from "react";
+import {
+  useReactTable,
+  getCoreRowModel,
+  getPaginationRowModel,
+  flexRender,
+  createColumnHelper,
+  PaginationState,
+  OnChangeFn,
+} from "@tanstack/react-table";
 
 const queryVideoSchema = z.object({
   tagId: z.coerce.number().min(1, "Tag ID is required"),
@@ -22,17 +31,66 @@ const queryVideoSchema = z.object({
 
 type QueryVideoForm = z.infer<typeof queryVideoSchema>;
 
-const statusColors = {
+const statusColors: Record<TaskStatus, string> = {
   [TaskStatus.DONE]: "bg-success",
   [TaskStatus.PROCESSING]: "bg-warning",
   [TaskStatus.NOT_STARTED]: "bg-base-300",
 };
 
+const columnHelper = createColumnHelper<Task>();
+
+const columns = [
+  columnHelper.accessor("id", {
+    header: "ID",
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor("status", {
+    header: "Status",
+    cell: (info) => (
+      <div className="flex items-center gap-2">
+        <div
+          className={`w-2 h-2 rounded-full ${statusColors[info.getValue()]}`}
+        />
+        {info.getValue()}
+      </div>
+    ),
+  }),
+  columnHelper.accessor("taskTag", {
+    header: "Task Tag",
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor("createdAt", {
+    header: "Created At",
+    cell: (info) => format(new Date(info.getValue()), "PPpp"),
+  }),
+  columnHelper.accessor("updatedAt", {
+    header: "Updated At",
+    cell: (info) => format(new Date(info.getValue()), "PPpp"),
+  }),
+  columnHelper.display({
+    id: "expand",
+    header: () => null,
+    cell: ({ row }) => (
+      <ChevronDown
+        className={`h-4 w-4 transition-transform ${
+          row.getIsExpanded() ? "rotate-180" : ""
+        }`}
+      />
+    ),
+  }),
+];
+
 export default function TasksPage() {
-  const { data: tasksData, refetch } = useTasks();
-  const { data: tagsData } = useTags();
+  const [pageIndex, setPageIndex] = useState(0);
+  const pageSize = 10;
   const [expandedTaskId, setExpandedTaskId] = useState<number | null>(null);
 
+  const { data: tasksData = { tasks: [], total: 0 }, refetch } = useTasks({
+    limit: pageSize,
+    skip: pageIndex * pageSize,
+  });
+
+  const { data: tagsData } = useTags();
   const form = useForm<QueryVideoForm>({
     resolver: zodResolver(queryVideoSchema),
     defaultValues: {
@@ -46,6 +104,27 @@ export default function TasksPage() {
   const { data: keywordsData } = useQueryKeywords(selectedTagId);
 
   const { mutate: queryVideo } = useQueryVideo();
+
+  const table = useReactTable({
+    data: tasksData.tasks,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    pageCount: Math.ceil(tasksData.total / pageSize),
+    state: {
+      pagination: {
+        pageIndex,
+        pageSize,
+      },
+    },
+    onPaginationChange: ((updater) => {
+      if (typeof updater === "function") {
+        const newState = updater({ pageIndex, pageSize });
+        setPageIndex(newState.pageIndex);
+      }
+    }) as OnChangeFn<PaginationState>,
+    manualPagination: true,
+  });
 
   const closeDialog = () => {
     const dialog = document.getElementById(
@@ -103,49 +182,43 @@ export default function TasksPage() {
       <div className="overflow-x-auto">
         <table className="table">
           <thead>
-            <tr>
-              <th>ID</th>
-              <th>Status</th>
-              <th>Task Tag</th>
-              <th>Created At</th>
-              <th>Updated At</th>
-              <th></th>
-            </tr>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <th key={header.id}>
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                  </th>
+                ))}
+              </tr>
+            ))}
           </thead>
           <tbody>
-            {tasksData?.tasks.map((task) => (
+            {table.getRowModel().rows.map((row) => (
               <>
                 <tr
-                  key={task.id}
+                  key={row.id}
                   className="cursor-pointer hover:bg-base-200"
-                  onClick={() => toggleTask(task.id)}
+                  onClick={() => toggleTask(row.original.id)}
                 >
-                  <td>{task.id}</td>
-                  <td>
-                    <div className="flex items-center gap-2">
-                      <div
-                        className={`w-2 h-2 rounded-full ${statusColors[task.status]}`}
-                      />
-                      {task.status}
-                    </div>
-                  </td>
-                  <td>{task.taskTag}</td>
-                  <td>{format(new Date(task.createdAt), "PPpp")}</td>
-                  <td>{format(new Date(task.updatedAt), "PPpp")}</td>
-                  <td>
-                    <ChevronDown
-                      className={`h-4 w-4 transition-transform ${
-                        expandedTaskId === task.id ? "rotate-180" : ""
-                      }`}
-                    />
-                  </td>
+                  {row.getVisibleCells().map((cell) => (
+                    <td key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </td>
+                  ))}
                 </tr>
-                {expandedTaskId === task.id && (
+                {expandedTaskId === row.original.id && (
                   <tr>
                     <td colSpan={6} className="bg-base-200">
                       <div className="p-4">
                         <p className="text-base-content/80">
-                          {task.description || "No description provided."}
+                          {row.original.description ||
+                            "No description provided."}
                         </p>
                       </div>
                     </td>
@@ -155,6 +228,28 @@ export default function TasksPage() {
             ))}
           </tbody>
         </table>
+      </div>
+
+      <div className="flex items-center justify-between mt-4">
+        <div className="join">
+          <button
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+            className="join-item btn btn-sm"
+          >
+            Previous
+          </button>
+          <button
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+            className="join-item btn btn-sm"
+          >
+            Next
+          </button>
+        </div>
+        <span className="text-sm text-base-content/80">
+          Page {pageIndex + 1} of {table.getPageCount()}
+        </span>
       </div>
 
       <dialog id="add-task-modal" className="modal">
