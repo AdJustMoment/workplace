@@ -63,3 +63,19 @@ export async function fetchVideoTags() {
   const response = await apiClientWithAuth.get<TagResponse>("/videos/tags");
   return response.data;
 }
+
+export type QueryKeyword = {
+  id: string;
+  keyword: string;
+};
+
+export type QueryKeywordResponse = {
+  keywords: QueryKeyword[];
+};
+
+export async function fetchQueryKeywords(tagId: number) {
+  const response = await apiClientWithAuth.get<QueryKeywordResponse>(
+    `/videos/tags/${tagId}/keywords`
+  );
+  return response.data;
+}

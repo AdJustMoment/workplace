@@ -4,7 +4,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "@/contexts/auth.context";
-import { ChartBar, House, Stamp, TestTube, Trash2 } from "lucide-react";
+import {
+  ChartBar,
+  House,
+  Stamp,
+  TestTube,
+  Trash2,
+  ListTodo,
+} from "lucide-react";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -28,6 +35,11 @@ export default function Sidebar() {
       href: "/analysis",
       label: "Analysis",
       icon: <ChartBar />,
+    },
+    {
+      href: "/tasks",
+      label: "Tasks",
+      icon: <ListTodo />,
     },
   ];
 
