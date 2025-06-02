@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getTasks, queryVideo } from "../../services/task.service";
+import { fetchQueryKeywords } from "@/services/video.service";
 
 export function useTasks(params?: {
   limit?: number;
@@ -20,5 +21,13 @@ export function useQueryVideo() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
     },
+  });
+}
+
+export function useQueryKeywords(tagId: number | undefined) {
+  return useQuery({
+    queryKey: ["queryKeywords", tagId],
+    queryFn: () => fetchQueryKeywords(tagId!),
+    enabled: tagId !== undefined,
   });
 }

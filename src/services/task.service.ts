@@ -35,12 +35,15 @@ export async function getTasks(params?: {
   return response.data;
 }
 
-export async function queryVideo(params: { tagId: number; queryText: string }) {
+export async function queryVideo(params: {
+  tagId: number;
+  queryKeywordId: string;
+}) {
   const response = await apiClientWithAuth.post<{ taskId: string }>(
     "/worker/video/query",
     {
       tag_id: params.tagId,
-      query_text: params.queryText,
+      keyword_id: params.queryKeywordId,
     }
   );
   return response.data;

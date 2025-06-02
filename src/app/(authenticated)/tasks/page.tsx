@@ -1,6 +1,10 @@
 "use client";
 
-import { useQueryVideo, useTasks } from "@/hooks/apis/use.tasks";
+import {
+  useQueryVideo,
+  useTasks,
+  useQueryKeywords,
+} from "@/hooks/apis/use.tasks";
 import { TaskStatus } from "@/services/task.service";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
@@ -8,10 +12,11 @@ import { RefreshCw } from "lucide-react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
+import { useTags } from "@/hooks/apis/use.tags";
 
 const queryVideoSchema = z.object({
   tagId: z.coerce.number().min(1, "Tag ID is required"),
-  queryText: z.string().min(1, "Query text is required"),
+  queryKeywordId: z.string().min(1, "Query keyword ID is required"),
 });
 
 type QueryVideoForm = z.infer<typeof queryVideoSchema>;
@@ -24,14 +29,18 @@ const statusColors = {
 
 export default function TasksPage() {
   const { data: tasksData, refetch } = useTasks();
-
+  const { data: tagsData } = useTags();
   const form = useForm<QueryVideoForm>({
     resolver: zodResolver(queryVideoSchema),
     defaultValues: {
       tagId: undefined,
-      queryText: "",
+      queryKeywordId: "",
     },
   });
+
+  const selectedTagId = form.watch("tagId");
+  const selectedQueryKeywordId = form.watch("queryKeywordId");
+  const { data: keywordsData } = useQueryKeywords(selectedTagId);
 
   const { mutate: queryVideo } = useQueryVideo();
 
@@ -122,13 +131,19 @@ export default function TasksPage() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Tag ID</span>
+                <span className="label-text">Tag</span>
               </label>
-              <input
-                type="number"
-                className="input input-bordered w-full"
+              <select
+                className="select select-bordered w-full"
                 {...form.register("tagId")}
-              />
+              >
+                <option value="">Select a tag</option>
+                {tagsData?.tags.map((tag) => (
+                  <option key={tag.id} value={tag.id}>
+                    {tag.name}
+                  </option>
+                ))}
+              </select>
               {form.formState.errors.tagId && (
                 <label className="label">
                   <span className="label-text-alt text-error">
@@ -140,17 +155,24 @@ export default function TasksPage() {
 
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Query Text</span>
+                <span className="label-text">Query Keyword</span>
               </label>
-              <input
-                type="text"
-                className="input input-bordered w-full"
-                {...form.register("queryText")}
-              />
-              {form.formState.errors.queryText && (
+              <select
+                className="select select-bordered w-full"
+                {...form.register("queryKeywordId")}
+                disabled={!selectedTagId}
+              >
+                <option value="">Select a keyword</option>
+                {keywordsData?.keywords.map((keyword) => (
+                  <option key={keyword.id} value={keyword.id}>
+                    {keyword.keyword}
+                  </option>
+                ))}
+              </select>
+              {form.formState.errors.queryKeywordId && (
                 <label className="label">
                   <span className="label-text-alt text-error">
-                    {form.formState.errors.queryText.message}
+                    {form.formState.errors.queryKeywordId.message}
                   </span>
                 </label>
               )}
@@ -169,7 +191,11 @@ export default function TasksPage() {
               >
                 Cancel
               </button>
-              <button type="submit" className="btn btn-primary">
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={!selectedTagId || !selectedQueryKeywordId}
+              >
                 Submit
               </button>
             </div>
