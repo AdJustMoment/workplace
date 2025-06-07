@@ -4,6 +4,7 @@ export enum TaskStatus {
   NOT_STARTED = "not_started",
   PROCESSING = "processing",
   DONE = "done",
+  FAILED = "failed",
 }
 
 export type Task = {

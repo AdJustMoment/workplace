@@ -35,6 +35,7 @@ const statusColors: Record<TaskStatus, string> = {
   [TaskStatus.DONE]: "bg-success",
   [TaskStatus.PROCESSING]: "bg-warning",
   [TaskStatus.NOT_STARTED]: "bg-base-300",
+  [TaskStatus.FAILED]: "bg-error",
 };
 
 const columnHelper = createColumnHelper<Task>();
