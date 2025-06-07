@@ -10,6 +10,7 @@ export type Video = {
   lengthSec: number;
   channelId: string;
   tagId: number;
+  downloadStatus: "downloaded" | "in_progress" | "in_queue" | "failed" | null;
 };
 
 export type VideoResponse = {
