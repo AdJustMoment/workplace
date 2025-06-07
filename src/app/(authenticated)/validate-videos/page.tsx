@@ -145,7 +145,7 @@ export default function Videos() {
       updateVideosStatus(
         {
           videos: selectedRows.map((row) => row.original),
-          valid,
+          valid: valid ? "true" : "false",
         },
         {
           onSuccess: () => {

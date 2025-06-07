@@ -24,6 +24,13 @@ import { ActionsCell } from "@/components/ActionCell";
 import { formatTime } from "@/utils/time";
 import { getYoutubeVideoUrl } from "@/utils/youtube";
 
+const statusColors = {
+  downloaded: "bg-success",
+  in_progress: "bg-warning",
+  in_queue: "bg-info",
+  failed: "bg-error",
+};
+
 const columnHelper = createColumnHelper<Video>();
 
 const columns = [
@@ -58,6 +65,19 @@ const columns = [
   columnHelper.accessor("lengthSec", {
     header: "Duration",
     cell: (info) => formatTime(info.getValue()),
+  }),
+  columnHelper.accessor("downloadStatus", {
+    header: "Download Status",
+    cell: (info) => {
+      const status = info.getValue();
+      if (!status) return null;
+      return (
+        <div className="flex items-center gap-2">
+          <div className={`w-2 h-2 rounded-full ${statusColors[status]}`} />
+          {status.replace("_", " ")}
+        </div>
+      );
+    },
   }),
   columnHelper.display({
     id: "actions",
