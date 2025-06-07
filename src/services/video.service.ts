@@ -41,7 +41,7 @@ export async function fetchVideos(params?: {
 
 export async function validateVideos(
   yt_ids: string[],
-  valid: boolean | "null"
+  valid: "true" | "false" | "null"
 ) {
   const response = await apiClientWithAuth.patch("/videos/validate", {
     yt_ids,

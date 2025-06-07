@@ -10,7 +10,7 @@ export function useUpdateVideosStatus() {
       valid,
     }: {
       videos: Video[];
-      valid: boolean | "null";
+      valid: "true" | "false" | "null";
     }) =>
       validateVideos(
         videos.map((video) => video.ytId),
