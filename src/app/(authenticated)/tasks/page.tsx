@@ -25,7 +25,7 @@ import {
 } from "@tanstack/react-table";
 
 const queryVideoSchema = z.object({
-  tagId: z.coerce.number().min(1, "Tag ID is required"),
+  tagId: z.string().min(1, "Tag ID is required"),
   queryKeywordId: z.string().min(1, "Query keyword ID is required"),
 });
 
@@ -94,7 +94,7 @@ export default function TasksPage() {
   const form = useForm<QueryVideoForm>({
     resolver: zodResolver(queryVideoSchema),
     defaultValues: {
-      tagId: undefined,
+      tagId: "",
       queryKeywordId: "",
     },
   });
@@ -134,17 +134,23 @@ export default function TasksPage() {
   };
 
   const onSubmit = async (data: QueryVideoForm) => {
-    queryVideo(data, {
-      onSuccess: () => {
-        closeDialog();
-        form.reset();
-        toast.success("Query task created");
-        refetch();
+    queryVideo(
+      {
+        tagId: parseInt(data.tagId),
+        queryKeywordId: data.queryKeywordId,
       },
-      onError: () => {
-        toast.error("Failed to create query task");
-      },
-    });
+      {
+        onSuccess: () => {
+          closeDialog();
+          form.reset();
+          toast.success("Query task created");
+          refetch();
+        },
+        onError: () => {
+          toast.error("Failed to create query task");
+        },
+      }
+    );
   };
 
   const onRefresh = () => {

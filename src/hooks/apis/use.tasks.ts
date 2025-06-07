@@ -24,10 +24,10 @@ export function useQueryVideo() {
   });
 }
 
-export function useQueryKeywords(tagId: number | undefined) {
+export function useQueryKeywords(tagId: string) {
   return useQuery({
     queryKey: ["queryKeywords", tagId],
-    queryFn: () => fetchQueryKeywords(tagId!),
-    enabled: tagId !== undefined,
+    queryFn: () => fetchQueryKeywords(Number(tagId)),
+    enabled: tagId !== "",
   });
 }
